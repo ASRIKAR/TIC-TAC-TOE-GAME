@@ -1,0 +1,83 @@
+import re
+
+#CREATING THE BOARD
+def create():
+    rows = 3
+    cols = 3
+    board = [["_" for j in range(cols)] for i in range(rows)]
+    return board
+
+# DISPLAYING THE BOARD
+def display(board):
+    for i in range(3):
+        for j in range(3):
+            print(board[i][j], end=" ")
+        print("")
+
+#CREATE A FUNCTION THAT DESIDES THE PLAYER WINS OR NOT
+def checkboard(board, row, col):
+    check_row = "".join(board[row])
+    check_col = "".join([board[i][col] for i in range(3)])
+    check_diagonal1 = "".join([board[i][i] for i in range(3)])
+    check_diagonal2 = "".join([board[i][2-i] for i in range(3)])
+    return "XXX" in [check_row, check_col, check_diagonal1, check_diagonal2] or \
+           "OOO" in [check_row, check_col, check_diagonal1, check_diagonal2]
+
+#GETTING ROW AND A COLUMN
+def get_row_col(num):
+    row = (num - 1) // 3
+    col = (num - 1) % 3
+    if 0 <= row < 3 and 0 <= col < 3:
+        return row, col
+    else:
+        print("You have entered the wrong number. Please enter a number between 1 and 9 only.")
+        return -1, -1
+
+#2)TAKING INPUT FROM USERS
+def user_input(board):
+    while True:
+        try:
+            num = int(input())
+            if not (1 <= num <= 9):
+                raise ValueError
+        except ValueError:
+            print("You have entered an invalid number. Please enter a number between 1 and 9.")
+        else:
+            row, col = get_row_col(num)
+            if board[row][col] != "_":
+                print("The block you are trying to enter is already filled. Please try again.")
+            else:
+                return row, col
+
+def game():
+    while True:
+        board = create()
+        print("\nLet's start the game.")
+        print('\nDISPLAYING THE BOARD')
+        display(board)
+
+        for count in range(9):
+            if count % 2 == 0:
+                print("\nIt's X's turn. Please select a number between 1 to 9 to place X.")
+            else:
+                print("\nIt's O's turn. Please select a number between 1 to 9 to place O.")
+            row, col = user_input(board)
+            if count % 2 == 0:
+                symbol = "X"
+            else:
+                symbol = "O"
+            board[row][col] = symbol
+            display(board)
+            if checkboard(board, row, col):
+                print(f"\nBINGO! PLAYER {symbol} WON THE GAME")
+                break
+        else:
+            print("\nDRAW")
+        print("\nDo you want to play again? (yes/no)")
+        rep = input().lower()
+        if rep != "yes":
+            print("Thanks for playing.")
+            break
+    return
+
+game()
